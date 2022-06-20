@@ -21,6 +21,8 @@ class Sparse(torch.nn.Module):
         return self.bias + x.mm(self.W())
     
     def W(self):
+        if torch.cuda.is_available():
+          self.cuda()
         W = torch.zeros(self.in_d, self.out_d, dtype = self.weight.dtype).to(self.device)
         W[self.loc] = self.weight
         return W
