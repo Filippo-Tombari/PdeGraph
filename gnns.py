@@ -21,8 +21,9 @@ class SAGE(torch.nn.Module):
         for conv in self.convs:
             conv.reset_parameters()
 
-    def forward(self, x, adjs):
+    def forward(self, x, adjs, device):
         for i, (edge_index, _, size) in enumerate(adjs):
+          edge_index = edge_index.to(device)
           xs = []
           x = self.convs[i](x, edge_index)
           if i != self.num_layers - 1:
@@ -34,12 +35,13 @@ class SAGE(torch.nn.Module):
             layer_embeddings = x_all
         return layer_embeddings
 
-    def inference(self, x_all, loader):
+    def inference(self, x_all, loader, device):
         total_edges = 0
         for i in range(self.num_layers):
             xs = []
             for batch_size, n_id, adj in loader:
                 edge_index, _, size = adj
+                edge_index = edge_index.to(device)
                 total_edges += edge_index.size(1)
                 x = x_all[n_id]
                 x = self.convs[i](x, edge_index)
