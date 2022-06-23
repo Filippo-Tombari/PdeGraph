@@ -5,12 +5,14 @@ import torch
 def pytorchgeo():
   try:
      import torch_geometric
+     import torch_geometric_temporal
   except ImportError:
     os.system("pip install torch-scatter     -f https://pytorch-geometric.com/whl/torch-%s.html" % torch.__version__)
     os.system("pip install torch-sparse      -f https://pytorch-geometric.com/whl/torch-%s.html" % torch.__version__)
     os.system("pip install torch-cluster     -f https://pytorch-geometric.com/whl/torch-%s.html" % torch.__version__)
     os.system("pip install torch-spline-conv -f https://pytorch-geometric.com/whl/torch-%s.html" % torch.__version__)
     os.system("pip install torch-geometric") 
+    os.system("pip install torch-geometric-temporal")
     os.system("pip install ogb")
     os.system("pip install umap")
     clear_output()
