@@ -12,7 +12,6 @@ class SAGE(torch.nn.Module):
         super(SAGE, self).__init__()
 
         self.num_layers = num_layers
-
         self.convs = torch.nn.ModuleList()
         self.convs.append(SAGEConv(in_channels, hidden_channels))
         for _ in range(num_layers - 2):
