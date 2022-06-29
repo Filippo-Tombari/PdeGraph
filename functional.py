@@ -90,5 +90,17 @@ def buildconnectivity(mesh):
       edge_index = np.append(edge_index,np.expand_dims(edge_to_vertex(edge),axis=0),axis=0 )
   return edge_index
 
+def create_adj(cells,num_vertices):
+  rows = cells.shape[0]
+  cols = cells.shape[1]
+  adj = np.zeros((num_vertices,num_vertices))
+  for i in range(rows):
+    for j in range(cols-1):
+      adj[cells[i][j]][cells[i][j+1]] = 1
+      adj[cells[i][j+1]][cells[i][j]] = 1
+  adj = adj + np.eye(num_vertices)
+  return adj
+
+  
 plot = dolfin.common.plotting.plot
 
