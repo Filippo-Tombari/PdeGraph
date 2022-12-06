@@ -161,7 +161,7 @@ class GNN(torch.nn.Module):
         :return:            torch.Tensor with shape [batch_size-1,n_nodes,in_node]. It is the output
                             features tensor.
         '''
-        #Decode
+        #Encode
 
         x = self.encoder_node(x)
         edge_attr = self.encoder_edge(edge_attr)
