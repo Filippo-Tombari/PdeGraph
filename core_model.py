@@ -140,7 +140,7 @@ class GNN(torch.nn.Module):
         self.encoder_edge = MLP(args.mlp_layers,args.in_edge,args.hidden_channels,args.hidden_channels)
         # Processor MLPs
         self.processor = nn.ModuleList()
-        for _ in range(mp_steps):
+        for _ in range(args.mp_steps):
             node_model = NodeModel(args.mlp_layers,args.hidden_channels)
             edge_model = EdgeModel(args.mlp_layers,args.hidden_channels)
             GraphNet = MPLayer(node_model=node_model, edge_model=edge_model)

@@ -6,10 +6,10 @@ from core_model import GNN
 from plots import trajectorytogif
 import time
 
-class learner():
+class Learner():
     ''' Class used for model training and rollout prediction'''
     def __init__(self,args):
-        self.device = args.device
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         #training parameters
         self.lr = args.lr
         self.milestones = args.milestones
