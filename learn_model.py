@@ -4,7 +4,6 @@ from torch.optim import Adam
 from dataset import create_dataset
 from core_model import GNN
 from plots import trajectorytogif
-import time
 
 class Learner():
     ''' Class used for model training and rollout prediction'''
@@ -40,7 +39,6 @@ class Learner():
             rollout_train_loss.clear()
             rollout_valid_loss.clear()
             # training
-            start = time.time()
             for sim in range(len(self.train_data['trajs'])):
                 u = self.train_data['trajs'][sim]
                 edge_index = self.train_data['edge_index'][sim]
@@ -80,10 +78,9 @@ class Learner():
                     rollout_valid_loss.append(valid_loss.item())
 
             # print rollout number and MSE for training and validation set at each epoch
-            end = time.time()
             mse_train = sum(rollout_train_loss) / len(rollout_train_loss)
             mse_valid = sum(rollout_valid_loss) / len(rollout_valid_loss)
-            print(f"Epoch {epoch+1:1f}: MSE_train {mse_train :6.6f}, MSE_valid {mse_valid :6.6f}, epoch time: {end - start}")
+            print(f"Epoch {epoch+1:1f}: MSE_train {mse_train :6.6f}, MSE_valid {mse_valid :6.6f}")
 
         print("End Training")
         print("Saving model")
