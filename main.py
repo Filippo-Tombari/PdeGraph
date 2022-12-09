@@ -1,10 +1,12 @@
 import argparse
+import numpy as np
 import torch
 from learn_model import Learner
 from utils import str2bool
 
 def main(args):
     torch.manual_seed(args.seed)
+    np.random.seed(args.seed)
 
     learner = Learner(args)
 

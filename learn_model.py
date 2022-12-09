@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from torch.optim.lr_scheduler import MultiStepLR
 from torch.optim import Adam
 from dataset import create_dataset
@@ -12,9 +13,7 @@ class Learner():
         #training parameters
         self.lr = args.lr
         self.milestones = args.milestones
-        self.loss = args.loss
         self.noise_var = args.noise_var
-        self.model_chk_path = args.model_chk_path
         self.batch_size = args.batch_size
         self.epochs = args.epochs
         self.dt = 0.02
@@ -54,7 +53,7 @@ class Learner():
                     # forward pass
                     du_net = self.net(u_batch[:self.batch_size - 1], edge_index, edge_weights)  # (bs,nodes,1)
                     du = (target[1:, :, 0] - u_batch[:-1, :, 0]) / self.dt
-                    train_loss = self.loss(du_net[:, :, 0], du, n_b_nodes, mode='train')
+                    train_loss = ((du_net[:, :, 0]-du)**2)[:,n_b_nodes:].mean()
                     rollout_train_loss.append(train_loss.item())
                     # backpropagation
                     self.optimizer.zero_grad()
@@ -74,7 +73,7 @@ class Learner():
                     # forward pass
                     du_net = self.net(u[:train_size - 1], edge_index, edge_weights)
                     du = (u[1:, :, 0] - u[:-1, :, 0]) / self.dt
-                    valid_loss = self.loss(du_net[:, :, 0], du, n_b_nodes, mode='train')
+                    valid_loss = ((du_net[:, :, 0]-du)**2)[:,n_b_nodes:].mean()
                     rollout_valid_loss.append(valid_loss.item())
 
             # print rollout number and MSE for training and validation set at each epoch
@@ -84,7 +83,8 @@ class Learner():
 
         print("End Training")
         print("Saving model")
-        torch.save(self.net, self.model_chk_path)
+        idf = np.random.randint(100000)
+        torch.save(self.net, f'checkpoints/chk_{idf}.pt')
 
     def forecast(self, save_plot = True):
         ''' Performs simulation rollout across all test simulations '''
@@ -108,7 +108,7 @@ class Learner():
                 u_net[i+1] = u1[0].detach()
                 u0 = u1.detach()
 
-            error = self.loss(u_net[:,:,0],u[:,:,0],n_b_nodes, 'test', mesh)
+            error = (((u_net[:,:,0]-u[:,:,0])**2).sum(1)/(u[:,:,0]**2).sum(1)).mean()
             print(f"Test simulation {sim+1:1f}: L2_rel_error {error :6.6f}")
             if save_plot:
                 trajectorytogif(u_net, self.dt, name=f"images/test_sim_{sim}_pred", mesh=mesh)
