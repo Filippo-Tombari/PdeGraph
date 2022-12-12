@@ -2,7 +2,7 @@ import os
 import imageio
 import matplotlib.pyplot as plt
 import dolfin
-from utils import asfield, asfunction
+from utils import asfunction
 
 plot = dolfin.common.plotting.plot
 
