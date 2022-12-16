@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+import random
 from torch.optim.lr_scheduler import MultiStepLR
 from torch.optim import Adam
 from dataset import create_dataset
@@ -37,8 +38,11 @@ class Learner():
         for epoch in range(self.epochs):
             rollout_train_loss.clear()
             rollout_valid_loss.clear()
+            #shuffle data
+            indices = list(range(len(self.train_data['trajs'])))
+            random.shuffle(indices)
             # training
-            for sim in range(len(self.train_data['trajs'])):
+            for sim in indices:
                 u = self.train_data['trajs'][sim]
                 edge_index = self.train_data['edge_index'][sim]
                 edge_weights = self.train_data['edge_weights'][sim].repeat(self.batch_size - 1, 1, 1)
