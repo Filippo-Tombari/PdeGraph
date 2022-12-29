@@ -66,24 +66,9 @@ class Learner():
 
             self.scheduler.step()
 
-            # validation
-            with torch.no_grad():
-                for sim in range(len(self.valid_data['trajs'])):
-                    u = self.valid_data['trajs'][sim]
-                    edge_index = self.valid_data['edge_index'][sim]
-                    edge_weights = self.valid_data['edge_weights'][sim].repeat(train_size - 1, 1, 1)
-                    n_b_nodes = self.valid_data['n_b_nodes'][sim]
-
-                    # forward pass
-                    du_net = self.net(u[:train_size - 1], edge_index, edge_weights)
-                    du = (u[1:, :, 0] - u[:-1, :, 0]) / self.dt
-                    valid_loss = ((du_net[:, :, 0]-du)**2)[:,n_b_nodes:].mean()
-                    rollout_valid_loss.append(valid_loss.item())
-
             # print rollout number and MSE for training and validation set at each epoch
             mse_train = sum(rollout_train_loss) / len(rollout_train_loss)
-            mse_valid = sum(rollout_valid_loss) / len(rollout_valid_loss)
-            print(f"Epoch {epoch+1:1f}: MSE_train {mse_train :6.6f}, MSE_valid {mse_valid :6.6f}")
+            print(f"Epoch {epoch+1:1f}: MSE_train {mse_train :6.6f}")
 
         print("End Training")
         print("Saving model")
