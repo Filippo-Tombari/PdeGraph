@@ -66,7 +66,7 @@ class Learner():
 
             self.scheduler.step()
 
-            # print rollout number and MSE for training and validation set at each epoch
+            # print rollout number and MSE for training set at each epoch
             mse_train = sum(rollout_train_loss) / len(rollout_train_loss)
             print(f"Epoch {epoch+1:1f}: MSE_train {mse_train :6.6f}")
 
