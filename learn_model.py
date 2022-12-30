@@ -19,7 +19,7 @@ class Learner():
         self.epochs = args.epochs
         self.dt = 0.02
 
-        self.train_data, self.valid_data, self.test_data = create_dataset(self.device)
+        self.train_data, self.test_data = create_dataset(self.device)
         if args.train_model:
             self.net = GNN(args).to(self.device)
         else:
@@ -29,15 +29,13 @@ class Learner():
         self.scheduler = MultiStepLR(self.optimizer, milestones=self.milestones, gamma=0.1)
 
     def train(self):
-        ''' Trains and validates the model'''
+        ''' Trains the model'''
         train_size = self.train_data["trajs"][0].shape[0]
         rollout_train_loss = []
-        rollout_valid_loss = []
 
         print("Start Training")
         for epoch in range(self.epochs):
             rollout_train_loss.clear()
-            rollout_valid_loss.clear()
             #shuffle data
             indices = list(range(len(self.train_data['trajs'])))
             random.shuffle(indices)
@@ -46,18 +44,18 @@ class Learner():
                 u = self.train_data['trajs'][sim]
                 edge_index = self.train_data['edge_index'][sim]
                 edge_weights = self.train_data['edge_weights'][sim].repeat(self.batch_size - 1, 1, 1)
-                n_b_nodes = self.train_data['n_b_nodes'][sim]
+                in_nodes = self.train_data['in_nodes'][sim]
 
                 for batch in range(0, train_size - 1, self.batch_size):
                     u_batch = u[batch:batch + self.batch_size]
                     target = u_batch
                     # add gaussian noise
-                    u_batch[:, n_b_nodes:, 0] += (self.noise_var) ** (0.5) * torch.randn_like(u_batch[:, n_b_nodes:, 0])
+                    u_batch[:, in_nodes, 0] += (self.noise_var) ** (0.5) * torch.randn_like(u_batch[:, in_nodes, 0])
 
                     # forward pass
                     du_net = self.net(u_batch[:self.batch_size - 1], edge_index, edge_weights)  # (bs,nodes,1)
                     du = (target[1:, :, 0] - u_batch[:-1, :, 0]) / self.dt
-                    train_loss = ((du_net[:, :, 0]-du)**2)[:,n_b_nodes:].mean()
+                    train_loss = ((du_net[:, :, 0]-du)**2)[:,in_nodes].mean()
                     rollout_train_loss.append(train_loss.item())
                     # backpropagation
                     self.optimizer.zero_grad()
@@ -83,7 +81,7 @@ class Learner():
             u = self.test_data['trajs'][sim]
             edge_index = self.test_data['edge_index'][sim]
             edge_attr = self.test_data['edge_attr'][sim]
-            n_b_nodes = self.test_data['n_b_nodes'][sim]
+            b_nodes = self.test_data['b_nodes'][sim]
             mesh = self.test_data['mesh'][sim]
             u_net = torch.zeros(u.shape).to(self.device)
             u_net[0] = u[0]
@@ -92,7 +90,7 @@ class Learner():
             for i in range(steps):
                 du_net = self.net(u0, edge_index, edge_attr)
                 u1 = u0 + self.dt*du_net
-                u1[:,:n_b_nodes,0] = u[i+1,:n_b_nodes,0]
+                u1[:,b_nodes,0] = u[i+1,b_nodes,0]
                 u1[:,:,1:] = u[i+1,:,1:]
                 u_net[i+1] = u1[0].detach()
                 u0 = u1.detach()

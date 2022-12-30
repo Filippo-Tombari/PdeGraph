@@ -37,6 +37,22 @@ def initialize_weights(edge_index, mesh):
 
     return edge_weights
 
+def get_bd(mesh_coords,bmesh_coords):
+    '''Get the indices corresponding to boundary nodes
+    :param      mesh_coords: numpy array with shape [mesh_nodes,2]
+    :param      bmesh_coords: numpy array with shape [boundary_mesh_nodes,2]
+    :return:    list with length boundary_mesh_nodes
+    '''
+    indices = []
+    for i in range(mesh_coords.shape[0]):
+      x1,x2 = mesh_coords[i]
+      for j in range(bmesh_coords.shape[0]):
+        y1,y2 = bmesh_coords[j]
+        if (x1==y1 and x2==y2 and y1!=1.):
+          indices.append(i)
+          break
+    return indices
+
 def load_data(indices,json_data,device,mydir):
     '''Creates a dataset from a json file selecting the keys contained in indices
     :param indices:     list of strings containing the keys to choose.
@@ -51,7 +67,8 @@ def load_data(indices,json_data,device,mydir):
     meshes = []
     edge_indices = []
     edge_weights = []
-    n_b_nodes = []
+    b_nodes = []
+    in_nodes = []
     trajs = []
     dt = 0.02
 
@@ -64,24 +81,27 @@ def load_data(indices,json_data,device,mydir):
 
         # get boundary nodes
         bmesh = dolfin.BoundaryMesh(mesh, "exterior", True)
-        n_b_nodes.append(bmesh.coordinates().shape[0])
 
         traj = torch.Tensor(json_data[i]['traj']).float().unsqueeze(dim=2).to(device)
         # Create a dummy feature to indicate the boundary nodes
-        # (they are listed first in the coordinates array)
         bindex = torch.zeros(traj.shape).to(device)
-        bindex[:, :n_b_nodes[-1], 0] = 1
+        # get boundary nodes
+        b_nodes.append(get_bd(mesh.coordinates(), bmesh.coordinates()))
+        in_nodes.append(list(set(range(mesh.coordinates().shape[0])).symmetric_difference(set(b_nodes[-1]))))
+        bindex[:, b_nodes[-1], 0] = 1
+
+
         # Create a tensor containg the timesteps for each trajectory
         dt_tensor = torch.stack([torch.full((traj.shape[1], 1), dt * j) for j in range(traj.shape[0])]).to(device)
         traj = torch.cat((traj, dt_tensor, bindex), 2)
         trajs.append(traj)
 
     data = {'mesh': meshes, 'edge_index': edge_indices, 'edge_weights': edge_weights, 'trajs': trajs,
-            "n_b_nodes": n_b_nodes}
+            "b_nodes": b_nodes, 'in_nodes': in_nodes}
     return data
 
 
-def create_dataset(device, train_size=60,valid_size=20):
+def create_dataset(device, train_size=60,test_size=20):
     ''' Creates training, validation and test set'''
     mydir = os.getcwd() + f'/files/'
 
@@ -92,13 +112,11 @@ def create_dataset(device, train_size=60,valid_size=20):
     indices = list(json_data.keys())
     random.shuffle(indices)
     train_indices = indices[:train_size]
-    valid_indices = indices[train_size:train_size+valid_size]
-    test_indices = indices[train_size+valid_size:]
+    test_indices = indices[train_size:]
 
     train_data = load_data(train_indices,json_data,device,mydir)
-    valid_data = load_data(valid_indices, json_data, device,mydir)
     test_data = load_data(test_indices, json_data, device,mydir)
-    return train_data,valid_data, test_data
+    return train_data, test_data
 
 
 
