@@ -2,8 +2,10 @@
 Graph Neural Network solver for parameter dependent PDEs
 # Getting started
 The following instructions refer to a Linux environment. The installation of Anaconda is recommended, e.g. with the commands
+
 'wget https://repo.anaconda.com/archive/Anaconda3-2022.10-Linux-x86_64.sh'
 'bash Anaconda3-2022.10-Linux-x86_64.sh'
+
 then you can create a virtual environment with
 'conda create -n ENV_NAME python=3.8.5'
 and then activate it with 
