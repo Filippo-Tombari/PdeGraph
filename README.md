@@ -31,3 +31,4 @@ In the last command you have to replace `${CUDA}` with `cu116`,`cu117` or `cpu` 
 
 Finally you can clone this repository running 
 
+`conda install git`
