@@ -101,9 +101,16 @@ def load_data(indices,json_data,device,mydir):
     return data
 
 
-def create_dataset(device, train_size=60,test_size=20):
-    ''' Creates training, validation and test set'''
-    mydir = os.getcwd() + f'/files/'
+def create_dataset(device, problem, train_size):
+    '''Creates training, validation and test set
+
+    :param  device:     either 'cuda' or 'cpu'.
+    :param  problem:    name of the problem we want to solve. It is the same name of the directory
+                        in which the data are placed
+    :param train_size:  size of the training set
+    :return:            tuple of dictionaries (see load_data)
+    '''
+    mydir = os.getcwd() + f'/data/{problem}'
 
     with open(mydir+'data.json', 'r') as f:
         json_data = json.loads(f.read())

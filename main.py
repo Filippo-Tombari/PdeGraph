@@ -18,7 +18,12 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Graph Neural Networks solver for PDEs')
 
+    # Problem
+    parser.add_argument('--example', default='AD', type=str, help='example name')
+    parser.add_argument('--dset_dir', default='data', type=str, help='dataset directory')
     parser.add_argument('--train_model', default=False, type=str2bool, help='train or test')
+    parser.add_argument('--train_size', default=80, type=int, help='training set size')
+    parser.add_argument('--dt', default=0.02, type=float, help='time step')
 
     # Net Parameters
     parser.add_argument('--mlp_layers', default=2, type=int, help='number of hidden layers per MLP')
@@ -30,8 +35,10 @@ if __name__ == '__main__':
     parser.add_argument('--lr', default=1e-3, type=float, help='learning rate')
     parser.add_argument('--noise_var', default=1e-6, type=float, help='training noise variance')
     parser.add_argument('--batch_size', default=25, type=int, help='training batch size')
-    parser.add_argument('--epochs', default=2000, type=int, help='training iterations')
+    parser.add_argument('--epochs', default=1500, type=int, help='training iterations')
     parser.add_argument('--milestones', default=[500, 1000], nargs='+', type=int, help='learning rate scheduler milestones')
+    parser.add_argument('--w1', default=1., type=float, help='weight for loss 1')
+    parser.add_argument('--w2', default=0., type=int, help='weight for loss 2')
 
     # Save Parameters
     parser.add_argument('--save_plot', default=True, type=str2bool, help='Save test simulation gif')

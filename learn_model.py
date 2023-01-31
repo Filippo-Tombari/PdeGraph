@@ -11,26 +11,32 @@ class Learner():
     ''' Class used for model training and rollout prediction'''
     def __init__(self,args):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        #training parameters
-        self.lr = args.lr
-        self.milestones = args.milestones
-        self.noise_var = args.noise_var
-        self.batch_size = args.batch_size
-        self.epochs = args.epochs
-        self.dt = 0.02
-
-        self.train_data, self.test_data = create_dataset(self.device)
+        # Problem
+        self.problem = args.example
         if args.train_model:
             self.net = GNN(args).to(self.device)
         else:
             self.net = torch.load('checkpoints/pretrained_net.pt', map_location = self.device)
 
-        self.optimizer = Adam(self.net.parameters(),self.lr)
+        # Training parameters
+        self.lr = args.lr
+        self.milestones = args.milestones
+        self.noise_var = args.noise_var
+        self.batch_size = args.batch_size
+        self.epochs = args.epochs
+        self.w1 = args.w1
+        self.w2 = args.w2
+        self.optimizer = Adam(self.net.parameters(), self.lr)
         self.scheduler = MultiStepLR(self.optimizer, milestones=self.milestones, gamma=0.1)
+        self.dt = args.dt
+        self.train_size = args.train_size
+
+        # Dataset creation
+        self.train_data, self.test_data = create_dataset(self.device, self.problem, self.train_size)
+
 
     def train(self):
         ''' Trains the model'''
-        train_size = self.train_data["trajs"][0].shape[0]
         rollout_train_loss = []
 
         print("Start Training")
@@ -46,7 +52,7 @@ class Learner():
                 edge_weights = self.train_data['edge_weights'][sim].repeat(self.batch_size - 1, 1, 1)
                 in_nodes = self.train_data['in_nodes'][sim]
 
-                for batch in range(0, train_size - 1, self.batch_size):
+                for batch in range(0, self.train_size - 1, self.batch_size):
                     u_batch = u[batch:batch + self.batch_size]
                     target = u_batch
                     # add gaussian noise
@@ -55,7 +61,13 @@ class Learner():
                     # forward pass
                     du_net = self.net(u_batch[:self.batch_size - 1], edge_index, edge_weights)  # (bs,nodes,1)
                     du = (target[1:, :, 0] - u_batch[:-1, :, 0]) / self.dt
-                    train_loss = ((du_net[:, :, 0]-du)**2)[:,in_nodes].mean()
+                    train_loss_1 = ((du_net[:, :, 0] - du) ** 2)[:, in_nodes].mean()
+                    u_net = u_batch[:-1, :, 0] + self.dt * du_net[:, :, 0]
+                    if self.problem == 'Stokes':
+                        u_net = u_net*(u_net>0) # The solution of Stokes problem
+                                                # must be always non negative
+                    train_loss_2 = ((u_net - target[1:, :, 0]) ** 2)[:, in_nodes].mean()
+                    train_loss = self.w1*train_loss_1 + self.w2*train_loss_2
                     rollout_train_loss.append(train_loss.item())
                     # backpropagation
                     self.optimizer.zero_grad()
@@ -90,6 +102,8 @@ class Learner():
             for i in range(steps):
                 du_net = self.net(u0, edge_index, edge_attr)
                 u1 = u0 + self.dt*du_net
+                if self.problem == 'Stokes':
+                    u1 = u1*(u1>0)
                 u1[:,b_nodes,0] = u[i+1,b_nodes,0]
                 u1[:,:,1:] = u[i+1,:,1:]
                 u_net[i+1] = u1[0].detach()
