@@ -16,7 +16,7 @@ class Learner():
         if args.train_model:
             self.net = GNN(args).to(self.device)
         else:
-            self.net = torch.load('checkpoints/pretrained_net.pt', map_location = self.device)
+            self.net = torch.load('checkpoints/pretrained_net_' + f'{self.problem}.pt', map_location = self.device)
 
         # Training parameters
         self.lr = args.lr

@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # Net Parameters
     parser.add_argument('--mlp_layers', default=2, type=int, help='number of hidden layers per MLP')
     parser.add_argument('--hidden_channels', default=32, type=int, help='dimension of hidden units')
-    parser.add_argument('--mp_steps', default=10, type=int, help='number of message passing steps')
+    parser.add_argument('--mp_steps', default=12, type=int, help='number of message passing steps')
 
     # Training Parameters
     parser.add_argument('--seed', default=10, type=int, help='random seed')

@@ -4,6 +4,10 @@ import dolfin
 
 def str2bool(v):
     # Code from : https://stackoverflow.com/questions/15008758/parsing-boolean-values-with-argparse
+    ''' Converts a string to a boolean value
+    :param v: string
+    :return: boolean
+    '''
 
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
         return True

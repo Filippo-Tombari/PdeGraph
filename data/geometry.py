@@ -8,6 +8,7 @@ import os
 from IPython.display import clear_output
 
 class Domain(object):
+    '''Base class for all domains'''
     def __init__(self, main, other, operation = None):
         """Combines two domains via the specified operation."""
         self.a, self.b, self.op = main, other, operation
@@ -43,6 +44,7 @@ class Domain(object):
             return "Volume"
 
 class Rectangle(Domain):
+    '''A rectangle domain.'''
     def __init__(self, p0, p1):
         self.p0 = p0
         self.p1 = p1
@@ -55,6 +57,7 @@ class Rectangle(Domain):
                                                              self.p1[1]-self.p0[1]), index+1
 
 class Box(Domain):
+    '''A box domain.'''
     def __init__(self, p0, p1):
         self.p0 = p0
         self.p1 = p1
@@ -67,6 +70,7 @@ class Box(Domain):
                                                           self.p1[0]-self.p0[0],self.p1[1]-self.p0[1],self.p1[2]-self.p0[2]), index+1
 
 class Circle(Domain):
+    '''A circle domain.'''
     def __init__(self, p, r = 1):
         self.p = p
         self.r = r
@@ -78,6 +82,7 @@ class Circle(Domain):
         return 'Disk(%d) = {%f, %f, 0.0, %f};\n' % (index,self.p[0], self.p[1], self.r), index+1
 
 class Polygon(Domain):
+      '''A polygon domain.'''
       def __init__(self, points):
             self.p = points
             if(numpy.linalg.norm(numpy.array(points[0])- numpy.array(points[-1]))>1e-15):
@@ -108,6 +113,13 @@ class Polygon(Domain):
 
 
 def mesh(domain, stepsize, name,structured = False):
+    """Meshes a domain with gmsh
+    :param domain: the domain to mesh (a Domain object)
+    :param stepsize: the stepsize to use ( float)
+    :param name: the name of the mesh file (string)
+    :param structured: if True, the mesh will be structured (boolean)
+    :return: the mesh (Mesh object)
+    """
     if(structured and domain.dim!=2):
         raise RuntimeError("Structured meshes are only available for 2D geometries.")
     code = 'SetFactory("OpenCASCADE");\nMesh.CharacteristicLengthMin = %f;\nMesh.CharacteristicLengthMax = %f;\n' % (stepsize, stepsize)

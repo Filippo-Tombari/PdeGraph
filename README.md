@@ -34,3 +34,49 @@ Finally you can clone this repository running
 `conda install git`
 
 `git clone https://github.com/Filippo-Tombari/PdeGraph.git`
+
+
+### Usage
+
+The main file is `main.py` and it can be run with the command 
+
+`python main.py`    
+
+Moreover it is possible to specify the value of some parameters by adding them to the command line as follows
+
+`python main.py --parameter_name parameter_value`
+
+The following table shows the available parameters and their default values.
+
+| Parameter           | Description                         | Default value |
+|---------------------|-------------------------------------|---------------|
+| `--example`         | example name: `AD`,`Stokes`         | `AD`          |
+| `--dset_dir`        | dataset directory                   | `data`        |
+| `--train_model`     | train or test                       | `False`       |
+| `--dt`              | time step                           | `0.02`        |
+| `--mlp_layers`      | number of hidden layers per MLP     | `2`           |
+| `--hidden_channels` | ndimension of hidden units          | `32`          |
+| `--mp_steps`        | number of message passing steps     | `12`          |
+| `--seed`            | random seed                         | `10`          |
+| `--batch_size`      | batch size                          | `25`          |
+| `--epochs`          | number of training epochs           | `1500`        |
+| `--lr`              | learning rate                       | `0.001`       |
+| `--noise_var`       | training noise variance             | `1e-6`        |
+| `--milestones`      | learning rate scheduler milestones  | `[500,1000]`  |
+| `--w1`              | weight for loss 1                   | `1.0`         |
+| `--w2`              | weight for loss 2                   | `0.0`         |
+| `--save_plot`       | Save test simulation gif            | `True`        |
+
+### Examples
+
+The following examples are available:
+
+- `AD`: Advection-Diffusion equation on a square domain with circular obstacle
+- `Stokes`: Advection-Diffusion equation with Stokes advectiion field on a rectanguar domain with a bump
+
+Data for the examples can be generated following the instructions in the `data` folder.
+
+Otherwise the zip files contained the data used in the pretrained simulations can be downloaded at the following
+link : https://polimi365-my.sharepoint.com/:f:/g/personal/10569815_polimi_it/EpvbKhXqEudIteCIkY50GMkB72VD0a7U4SZtpQFTdUDZFA?e=tuBs4M
+
+After downloading the zip files, they have to be extracted in the `data` folder.
