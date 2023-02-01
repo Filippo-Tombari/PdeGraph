@@ -29,12 +29,13 @@ All the following python packages will be installed inside the virtual environme
 
 In the last command you have to replace `${CUDA}` with `cu116`,`cu117` or `cpu` according to your system.
 
-Finally you can clone this repository running 
-
-`conda install git`
+Finally you can clone this repository running
 
 `git clone https://github.com/Filippo-Tombari/PdeGraph.git`
 
+and then move inside the folder with
+
+`cd PdeGraph`
 
 ### Usage
 
