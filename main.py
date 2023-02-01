@@ -1,3 +1,4 @@
+import os
 import argparse
 import numpy as np
 import torch
@@ -7,6 +8,8 @@ from utils import str2bool
 def main(args):
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
+    if args.save_plot and not os.path.exists('images'):
+        os.makedirs('images')
 
     learner = Learner(args)
 
