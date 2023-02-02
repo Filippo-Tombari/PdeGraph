@@ -16,10 +16,10 @@ class MLP(nn.Module):
         super(MLP, self).__init__()
         self.layers = nn.ModuleList()
         self.layers.append(nn.Linear(in_channels,hidden_channels))
-        self.layers.append(nn.ELU())
+        self.layers.append(nn.SiLU())
         for _ in range(num_layers - 2):
             self.layers.append(nn.Linear(hidden_channels,hidden_channels))
-            self.layers.append(nn.ELU())
+            self.layers.append(nn.SiLU())
         self.layers.append(nn.Linear(hidden_channels, out_channels))
 
                
