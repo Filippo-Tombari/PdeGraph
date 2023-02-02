@@ -92,7 +92,7 @@ class Learner():
         for sim in range(len(self.test_data['trajs'])):
             u = self.test_data['trajs'][sim]
             edge_index = self.test_data['edge_index'][sim]
-            edge_attr = self.test_data['edge_attr'][sim]
+            edge_attr = self.test_data['edge_weights'][sim]
             b_nodes = self.test_data['b_nodes'][sim]
             mesh = self.test_data['mesh'][sim]
             u_net = torch.zeros(u.shape).to(self.device)
