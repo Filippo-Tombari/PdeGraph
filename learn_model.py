@@ -13,10 +13,10 @@ class Learner():
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # Problem
         self.problem = args.example
-        if args.train_model:
-            self.net = GNN(args).to(self.device)
-        else:
-            self.net = torch.load('checkpoints/pretrained_net_' + f'{self.problem}.pt', map_location = self.device)
+
+        self.net = GNN(args).to(self.device)
+        if not args.train_model:
+            self.net.load_state_dict(torch.load('checkpoints/pretrained_net_' + f'{self.problem}', map_location = self.device))
 
         # Training parameters
         self.lr = args.lr

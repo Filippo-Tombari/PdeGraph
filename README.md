@@ -23,7 +23,7 @@ All the following python packages will be installed inside the virtual environme
 
 `conda install -c conda-forge mshr`
 
-`pip install ipython numpy matplotlib torch imageio matplotlib`
+`pip install ipython numpy matplotlib torch imageio`
 
 `pip install torch-scatter -f https://data.pyg.org/whl/torch-1.13.0+${CUDA}.html`
 
