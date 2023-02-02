@@ -29,6 +29,9 @@ if __name__ == '__main__':
     parser.add_argument('--dt', default=0.02, type=float, help='time step')
 
     # Net Parameters
+    parser.add_argument('--in_node', default=3, type=int, help='number of input features for each node')
+    parser.add_argument('--in_edge', default=3, type=int, help='number of input features for each edge')
+    parser.add_argument('--out_channels', default=1, type=int, help='number of output features for each node')
     parser.add_argument('--mlp_layers', default=2, type=int, help='number of hidden layers per MLP')
     parser.add_argument('--hidden_channels', default=32, type=int, help='dimension of hidden units')
     parser.add_argument('--mp_steps', default=12, type=int, help='number of message passing steps')

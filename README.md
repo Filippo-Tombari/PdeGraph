@@ -49,24 +49,27 @@ Moreover it is possible to specify the value of some parameters by adding them t
 
 The following table shows the available parameters and their default values.
 
-| Parameter           | Description                         | Default value |
-|---------------------|-------------------------------------|---------------|
-| `--example`         | example name: `AD`,`Stokes`         | `AD`          |
-| `--dset_dir`        | dataset directory                   | `data`        |
-| `--train_model`     | train or test                       | `False`       |
-| `--dt`              | time step                           | `0.02`        |
-| `--mlp_layers`      | number of hidden layers per MLP     | `2`           |
-| `--hidden_channels` | ndimension of hidden units          | `32`          |
-| `--mp_steps`        | number of message passing steps     | `12`          |
-| `--seed`            | random seed                         | `10`          |
-| `--batch_size`      | batch size                          | `25`          |
-| `--epochs`          | number of training epochs           | `1500`        |
-| `--lr`              | learning rate                       | `0.001`       |
-| `--noise_var`       | training noise variance             | `1e-6`        |
-| `--milestones`      | learning rate scheduler milestones  | `[500,1000]`  |
-| `--w1`              | weight for loss 1                   | `1.0`         |
-| `--w2`              | weight for loss 2                   | `0.0`         |
-| `--save_plot`       | Save test simulation gif            | `True`        |
+| Parameter           | Description                             | Default value |
+|---------------------|-----------------------------------------|---------------|
+| `--example`         | example name: `AD`,`Stokes`             | `AD`          |
+| `--dset_dir`        | dataset directory                       | `data`        |
+| `--train_model`     | train or test                           | `False`       |
+| `--dt`              | time step                               | `0.02`        |
+| `in_nodes`          | number of input features for each node  | `3`           |
+| `in_edges`          | number of input features for each edge  | `3`           |
+| `out_channels`      | number of output features for each node | `1`           |
+| `--mlp_layers`      | number of hidden layers per MLP         | `2`           |
+| `--hidden_channels` | ndimension of hidden units              | `32`          |
+| `--mp_steps`        | number of message passing steps         | `12`          |
+| `--seed`            | random seed                             | `10`          |
+| `--batch_size`      | batch size                              | `25`          |
+| `--epochs`          | number of training epochs               | `1500`        |
+| `--lr`              | learning rate                           | `0.001`       |
+| `--noise_var`       | training noise variance                 | `1e-6`        |
+| `--milestones`      | learning rate scheduler milestones      | `[500,1000]`  |
+| `--w1`              | weight for loss 1                       | `1.0`         |
+| `--w2`              | weight for loss 2                       | `0.0`         |
+| `--save_plot`       | Save test simulation gif                | `True`        |
 
 ### Examples
 
