@@ -54,10 +54,6 @@ The following table shows the available parameters and their default values.
 | `--example`         | example name: `AD`,`Stokes`             | `AD`          |
 | `--dset_dir`        | dataset directory                       | `data`        |
 | `--train_model`     | train or test                           | `False`       |
-| `--dt`              | time step                               | `0.02`        |
-| `in_nodes`          | number of input features for each node  | `3`           |
-| `in_edges`          | number of input features for each edge  | `3`           |
-| `out_channels`      | number of output features for each node | `1`           |
 | `--mlp_layers`      | number of hidden layers per MLP         | `2`           |
 | `--hidden_channels` | ndimension of hidden units              | `32`          |
 | `--mp_steps`        | number of message passing steps         | `12`          |

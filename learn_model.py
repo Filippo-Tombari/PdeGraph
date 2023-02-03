@@ -19,6 +19,12 @@ class Learner():
             self.net.load_state_dict(torch.load('checkpoints/pretrained_net_' + f'{self.problem}', map_location = self.device))
 
         # Training parameters
+        if self.problem == 'AD':
+            print("Using default dt for AD")
+            self.dt = 0.02
+        if self.problem == 'Stokes':
+            print("Using default dt for Stokes")
+            self.dt = 0.01
         self.lr = args.lr
         self.milestones = args.milestones
         self.noise_var = args.noise_var
@@ -28,7 +34,6 @@ class Learner():
         self.w2 = args.w2
         self.optimizer = Adam(self.net.parameters(), self.lr)
         self.scheduler = MultiStepLR(self.optimizer, milestones=self.milestones, gamma=0.1)
-        self.dt = args.dt
         self.train_size = args.train_size
 
         # Dataset creation
@@ -38,7 +43,7 @@ class Learner():
     def train(self):
         ''' Trains the model'''
         rollout_train_loss = []
-
+        trajs_size = self.train_data['trajs'][0].shape[0]
         print("Start Training")
         for epoch in range(self.epochs):
             rollout_train_loss.clear()
@@ -52,7 +57,7 @@ class Learner():
                 edge_weights = self.train_data['edge_weights'][sim].repeat(self.batch_size - 1, 1, 1)
                 in_nodes = self.train_data['in_nodes'][sim]
 
-                for batch in range(0, self.train_size - 1, self.batch_size):
+                for batch in range(0, trajs_size - 1, self.batch_size):
                     u_batch = u[batch:batch + self.batch_size]
                     target = u_batch
                     # add gaussian noise
@@ -104,8 +109,8 @@ class Learner():
                 u1 = u0 + self.dt*du_net
                 if self.problem == 'Stokes':
                     u1 = u1*(u1>0)
-                u1[:,b_nodes,0] = u[i+1,b_nodes,0]
-                u1[:,:,1:] = u[i+1,:,1:]
+                u1[0,b_nodes,0] = u[i+1,b_nodes,0]
+                u1[0,:,1:] = u[i+1,:,1:]
                 u_net[i+1] = u1[0].detach()
                 u0 = u1.detach()
 

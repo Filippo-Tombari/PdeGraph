@@ -52,7 +52,7 @@ def get_bd(mesh_coords,bmesh_coords):
           break
     return indices
 
-def load_data(indices,json_data,device,mydir):
+def load_data(indices,json_data,device,mydir,problem):
     '''Creates a dataset from a json file selecting the keys contained in indices
     :param indices:     list of strings containing the keys to choose.
     :param json_data:   json file that contains all the simulations. Every key contains dictionary with the following keys:
@@ -60,6 +60,7 @@ def load_data(indices,json_data,device,mydir):
                         -'traj': numpy.ndarray containing the trajectories of the key simulation.
     :param device:      either 'cuda' or 'cpu'.
     :param mydir:       directory in which the meshes and the json file are contained.
+    :param problem:     name of the problem we want to solve.
     :return:            {'mesh': dolfin.cpp.mesh.Mesh, 'edge_index': torch.Tensor, 'edge_weights': torch.Tensor,
                         'trajs': torch.Tensor, "n_b_nodes": int}.
     '''
@@ -69,7 +70,10 @@ def load_data(indices,json_data,device,mydir):
     b_nodes = []
     in_nodes = []
     trajs = []
-    dt = 0.02
+    if problem == 'AD':
+        dt = 0.02
+    else:
+        dt = 0.01
 
     for i in indices:
         mesh = dolfin.cpp.mesh.Mesh(mydir + json_data[i]['mesh'] + ".xml")
@@ -121,6 +125,6 @@ def create_dataset(device, problem, train_size):
     train_indices = indices[:train_size]
     test_indices = indices[train_size:]
 
-    train_data = load_data(train_indices,json_data,device,mydir)
-    test_data = load_data(test_indices, json_data, device,mydir)
+    train_data = load_data(train_indices,json_data,device,mydir,problem)
+    test_data = load_data(test_indices, json_data, device,mydir,problem)
     return train_data, test_data
