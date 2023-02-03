@@ -115,7 +115,7 @@ class Learner():
                 u0 = u1.detach()
 
             error = (((u_net[:,:,0]-u[:,:,0])**2).sum(1)/(u[:,:,0]**2).sum(1)).mean()
-            print(f"Test simulation {sim+1:1f}: L2_rel_error {error :6.6f}")
+            print(f"Test simulation {sim+1:1f}: RMSE {error :6.6f}")
             if save_plot:
                 trajectorytogif(u_net, self.dt, name=f"images/test_sim_{sim}_pred_"+f"{self.problem}", mesh=mesh)
                 trajectorytogif(u, self.dt, name=f"images/test_sim_{sim}_true_"+f"{self.problem}", mesh=mesh)
