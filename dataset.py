@@ -6,7 +6,6 @@ import json
 import os
 
 
-
 def buildconnectivity(mesh):
     '''builds the connectivity matrix of a mesh
     :param mesh:    dolfin.cpp.mesh.Mesh object.
@@ -102,7 +101,8 @@ def load_data(indices,json_data,device,mydir):
 
 
 def create_dataset(device, problem, train_size):
-    '''Creates training, validation and test set
+    '''
+    Creates training, validation and test set
 
     :param  device:     either 'cuda' or 'cpu'.
     :param  problem:    name of the problem we want to solve. It is the same name of the directory
@@ -124,6 +124,3 @@ def create_dataset(device, problem, train_size):
     train_data = load_data(train_indices,json_data,device,mydir)
     test_data = load_data(test_indices, json_data, device,mydir)
     return train_data, test_data
-
-
-

@@ -21,9 +21,9 @@ You can deactivate the virtual environment at any time running
 
 All the following python packages will be installed inside the virtual environment in order to avoid conflicts with other projects by running
 
-`conda install -c conda-forge mshr`
+`conda install -c conda-forge fenics`
 
-`pip install ipython numpy matplotlib torch imageio`
+`pip install ipython matplotlib torch imageio`
 
 `pip install torch-scatter -f https://data.pyg.org/whl/torch-1.13.0+${CUDA}.html`
 
