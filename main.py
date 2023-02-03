@@ -49,7 +49,8 @@ if __name__ == '__main__':
     parser.add_argument('--save_plot', default=True, type=str2bool, help='Save test simulation gif')
 
     args = parser.parse_args()
-
+    if args.example != 'AD' and args.example != 'Stokes':
+        raise ValueError('Example name should be AD or Stokes')
     main(args)
 
 
