@@ -8,7 +8,7 @@ class MLP(nn.Module):
     '''Class for creating a Multi-Layer Perceptron
           Attributes
             layers      (List)      A list of layers transforms a tensor x into f(Wx + b), where
-                                    f is ELU activation function, W is the weight matrix and b the bias tensor.
+                                    f is SiLU activation function, W is the weight matrix and b the bias tensor.
 
 
     '''
