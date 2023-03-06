@@ -88,7 +88,7 @@ class Learner():
         print("End Training")
         print("Saving model")
         idf = np.random.randint(100000)
-        torch.save(self.net, f'checkpoints/chk_{idf}.pt')
+        torch.save(self.net.state_dict(), f'checkpoints/chk_{idf}')
 
     def forecast(self, save_plot = True):
         ''' Performs simulation rollout across all test simulations '''
