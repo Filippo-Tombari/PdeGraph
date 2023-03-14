@@ -11,8 +11,8 @@ def buildconnectivity(mesh):
     :param mesh:    dolfin.cpp.mesh.Mesh object.
     :return:        torch.Tensor with shape [2,n_edges].
     '''
-    mesh.init(mesh.topology().dim()-1,0)
-    edge_to_vertex = mesh.topology()(mesh.topology().dim()-1,0)
+    mesh.init(1,0)
+    edge_to_vertex = mesh.topology()(1,0)
     for edge in range(mesh.num_edges()):
         if edge == 0:
           edge_index = np.expand_dims(edge_to_vertex(edge),axis=0)
